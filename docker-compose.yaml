@@ -6,7 +6,7 @@ services:
     container_name: final-back
     restart: always
     environment:
-      MYSQL_DATABASE: 'dh202302-g2'
+      MYSQL_DATABASE: 'grupo4'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
