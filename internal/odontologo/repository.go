@@ -9,7 +9,7 @@ import (
 type IRepository interface {
 	CreateDentist(dentist domain.Dentist) (*domain.Dentist, error)
 	GetDentistById(id int) (*domain.Dentist, error)
-	UpdateDentist(id int, patient domain.Dentist) (*domain.Dentist, error)
+	UpdateDentist(id int, dentist domain.Dentist) (*domain.Dentist, error)
 	DeleteDentist(id int) error
 }
 
@@ -30,11 +30,11 @@ func (r *Repository) CreateDentist(dentist domain.Dentist) (*domain.Dentist, err
 }
 
 func (r *Repository) GetDentistById(id int) (*domain.Dentist, error) {
-	patient, err := r.Store.GetDentistById(id)
+	dentist, err := r.Store.GetDentistById(id)
 	if err != nil {
 		return nil, errors.New("el odontolgo no existe")
 	}
-	return patient, nil
+	return dentist, nil
 }
 
 func (r *Repository) UpdateDentist(id int, dentist domain.Dentist) (*domain.Dentist, error) {
@@ -56,7 +56,7 @@ func (r *Repository) DeleteDentist(id int) error {
 	}
 	err = r.Store.DeleteDentist(id)
 	if err != nil {
-		return errors.New("error al eliminar el paciente")
+		return errors.New("error al eliminar el odontologo")
 	}
 	return nil
 }

@@ -5,7 +5,7 @@ import "parcial/internal/domain"
 type IService interface {
 	CreateDentist(dentist domain.Dentist) (*domain.Dentist, error)
 	GetDentistById(id int) (*domain.Dentist, error)
-	UpdateDentist(id int, patient domain.Dentist) (*domain.Dentist, error)
+	UpdateDentist(id int, dentist domain.Dentist) (*domain.Dentist, error)
 	DeleteDentist(id int) error
 }
 
@@ -22,19 +22,19 @@ func (ps *Service) CreateDentist(dentist domain.Dentist) (*domain.Dentist, error
 }
 
 func (ps *Service) GetDentistById(id int) (*domain.Dentist, error) {
-	patient, err := ps.Repository.GetDentistById(id)
+	dentist, err := ps.Repository.GetDentistById(id)
 	if err != nil {
 		return nil, err
 	}
-	return patient, nil
+	return dentist, nil
 }
 
-func (ps *Service) UpdatePatient(id int, d domain.Dentist) (*domain.Dentist, error) {
-	patient, err := ps.Repository.UpdateDentist(id, d)
+func (ps *Service) UpdateDentist(id int, d domain.Dentist) (*domain.Dentist, error) {
+	dentist, err := ps.Repository.UpdateDentist(id, d)
 	if err != nil {
 		return nil, err
 	}
-	return patient, nil
+	return dentist, nil
 }
 
 func (ps *Service) DeleteDentist(id int) error {
