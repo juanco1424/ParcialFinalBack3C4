@@ -1,20 +1,12 @@
 package main
 
 import (
-	"os"
-	"parcial/cmd/config"
-	"parcial/cmd/handler"
-	"parcial/cmd/middleware"
-	"parcial/cmd/server/external/database"
-	"parcial/internal/paciente"
-
-	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	env := os.Getenv("ENV")
+	//Ejemplo de implementacion local probar de nuevo con integracion de DB
+	/*env := os.Getenv("ENV")
 	if env == "" {
 		env = "local"
 	}
@@ -50,5 +42,5 @@ func main() {
 		patients.DELETE(":id", phandler.DeletePatient)
 		patients.PUT(":id", phandler.UpdatePatient)
 	}
-	router.Run()
+	router.Run()*/
 }
