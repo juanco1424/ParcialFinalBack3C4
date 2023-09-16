@@ -3,6 +3,7 @@ version: '3.3'
 services:
   mysql:
     image: mysql:5.7
+    container_name: final-back
     restart: always
     environment:
       MYSQL_DATABASE: 'dh202302-g2'
@@ -14,7 +15,8 @@ services:
     expose:
       - '3307'
     volumes:
-      - mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/your_sql_file.sql
+
 
 volumes:
   mysql:
