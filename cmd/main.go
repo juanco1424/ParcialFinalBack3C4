@@ -1,6 +1,7 @@
 package main
 
 import (
+
 	"os"
 	"parcial/cmd/config"
 	"parcial/cmd/handler"
@@ -11,11 +12,13 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+
 )
 
 func main() {
-	//Ejemplo de implementacion local probar de nuevo con integracion de DB
+
 	env := os.Getenv("ENV")
+
 	if env == "" {
 		env = "local"
 	}
@@ -34,22 +37,38 @@ func main() {
 	authMidd := middleware.NewAuth(config.PublicConfig.PublicKey, config.PrivateConfig.SecretKey)
 
 	mysqlDb, err := database.MySQLDatabase()
+
 	if err != nil {
 		panic(err)
 	}
 
 	storage := database.SqlStore{DB: mysqlDb}
+
+	pacientRepo := paciente.Repository{Store: &storage}
+	pservice := paciente.Service{Repository: &pacientRepo}
+	phandler := handler.PatientHandler{PService: &pservice}
+
+	router := gin.Default()
+	patients := router.Group("patient", authMidd.AuthHeader)
+	{
+		patients.GET(":id", phandler.GetPatientById)
+		patients.POST("", phandler.CreatePatient)
+		patients.DELETE(":id", phandler.DeletePatient)
+		patients.PUT(":id", phandler.UpdatePatient)
+	}
+
 	odontologoRepo := odontologo.Repository{Store: &storage}
 	dservice := odontologo.Service{Repository: &odontologoRepo}
-	phandler := handler.DentistHandler{IService: &dservice}
+	dhandler := handler.DentistHandler{IService: &dservice}
 
 	router := gin.Default()
 	dentists := router.Group("dentist", authMidd.AuthHeader)
 	{
-		dentists.GET(":id", phandler.GetDentistById)
-		dentists.POST("", phandler.CreateDentist)
-		dentists.DELETE(":id", phandler.DeleteDentist)
-		dentists.PUT(":id", phandler.UpdateDentist)
+		dentists.GET(":id", dhandler.GetDentistById)
+		dentists.POST("", dhandler.CreateDentist)
+		dentists.DELETE(":id", dhandler.DeleteDentist)
+		dentists.PUT(":id", dhandler.UpdateDentist)
 	}
 	router.Run()
+
 }
