@@ -52,18 +52,28 @@ func (s *SqlStore) GetDentistByRegistration(registration string) (*domain.Dentis
 	row := s.DB.QueryRow(query, registration)
 	err := row.Scan(&dentist.ID, &dentist.LastName, &dentist.Name, &dentist.Registration)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no se encontró ningún dentista con la matrícula %s", registration)
+		}
+
+		return nil, fmt.Errorf("error al buscar dentista por matrícula: %v", err)
 	}
-	println(&dentist)
+
 	return &dentist, nil
 }
 
 func (s *SqlStore) UpdateDentist(id int, dentist domain.Dentist) (*domain.Dentist, error) {
 	updateQuery := "UPDATE dentist SET lastname = ?, name = ?, registration = ? WHERE ID = ?"
-	_, err := s.DB.Exec(updateQuery, dentist.LastName, dentist.Name, dentist.Registration, id)
+	result, err := s.DB.Exec(updateQuery, dentist.LastName, dentist.Name, dentist.Registration, id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error al actualizar el dentista con ID %d: %v", id, err)
 	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("no se encontró ningún dentista con el ID %d para actualizar", id)
+	}
+
 	return &dentist, nil
 }
 

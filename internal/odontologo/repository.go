@@ -20,7 +20,7 @@ type Repository struct {
 func (r *Repository) CreateDentist(dentist domain.Dentist) (*domain.Dentist, error) {
 	existingDentist, _ := r.Store.GetDentistByRegistration(dentist.Registration)
 	if existingDentist != nil {
-		return nil, errors.New("ya existe un paciente con ese REGISTRO")
+		return nil, errors.New("ya existe un odontologo con ese REGISTRO")
 	}
 	p, err := r.Store.CreateDentist(dentist)
 	if err != nil {
