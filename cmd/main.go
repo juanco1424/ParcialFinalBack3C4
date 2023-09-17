@@ -1,18 +1,17 @@
 package main
 
 import (
-
 	"os"
 	"parcial/cmd/config"
 	"parcial/cmd/handler"
 	"parcial/cmd/middleware"
 	"parcial/cmd/sever/external/database"
 	"parcial/internal/odontologo"
+	"parcial/internal/paciente"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-
 )
 
 func main() {
@@ -42,9 +41,11 @@ func main() {
 		panic(err)
 	}
 
-	storage := database.SqlStore{DB: mysqlDb}
+	storageDentist := database.SqlStoreDentist{DB: mysqlDb}
+	storagePatient := database.SqlStorePatient{DB: mysqlDb}
+	storageAppointment := database.SqlStoreAppointment{DB: mysqlDb}
 
-	pacientRepo := paciente.Repository{Store: &storage}
+	pacientRepo := paciente.Repository{Store: &storagePatient}
 	pservice := paciente.Service{Repository: &pacientRepo}
 	phandler := handler.PatientHandler{PService: &pservice}
 
@@ -57,17 +58,30 @@ func main() {
 		patients.PUT(":id", phandler.UpdatePatient)
 	}
 
-	odontologoRepo := odontologo.Repository{Store: &storage}
+	odontologoRepo := odontologo.Repository{Store: &storageDentist}
 	dservice := odontologo.Service{Repository: &odontologoRepo}
 	dhandler := handler.DentistHandler{IService: &dservice}
 
-	router := gin.Default()
 	dentists := router.Group("dentist", authMidd.AuthHeader)
 	{
 		dentists.GET(":id", dhandler.GetDentistById)
 		dentists.POST("", dhandler.CreateDentist)
 		dentists.DELETE(":id", dhandler.DeleteDentist)
 		dentists.PUT(":id", dhandler.UpdateDentist)
+	}
+
+	appointmentRepo := appointments.AppointmentRepository{Store: &storageAppointment}
+	aservice := appointment.Service{Repository: &appointmentRepo}
+	ahandler := handler.AppointmentHandler{PService: &aservice}
+
+	appointments := router.Group("appointment", authMidd.AuthHeader)
+	{
+		appointments.GET("", ahandler.GetAllAppointments)
+		appointments.GET(":id", ahandler.GetAppointmentById)
+		appointments.GET("patient/:dni", ahandler.GetAppointmentsByDni)
+		appointments.POST("", ahandler.CreateAppointment)
+		appointments.DELETE(":id", ahandler.DeleteAppointment)
+		appointments.PUT(":id", ahandler.UpdateAppointment)
 	}
 	router.Run()
 

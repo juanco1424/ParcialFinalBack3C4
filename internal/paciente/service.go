@@ -5,7 +5,7 @@ import (
 )
 
 // Servicio de las funcionalidades de paciente
-type IService interface {
+type IServicePatient interface {
 	GetPatientById(id int) (*domain.Patient, error)
 	CreatePatient(patient domain.Patient) (*domain.Patient, error)
 	UpdatePatient(id int, patient domain.Patient) (*domain.Patient, error)

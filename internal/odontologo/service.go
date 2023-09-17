@@ -2,7 +2,7 @@ package odontologo
 
 import "parcial/internal/domain"
 
-type IService interface {
+type IServiceDentist interface {
 	CreateDentist(dentist domain.Dentist) (*domain.Dentist, error)
 	GetDentistById(id int) (*domain.Dentist, error)
 	UpdateDentist(id int, dentist domain.Dentist) (*domain.Dentist, error)
