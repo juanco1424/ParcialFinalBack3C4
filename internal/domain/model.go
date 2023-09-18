@@ -8,3 +8,19 @@ type Patient struct {
 	DNI           string `json:"dni"  binding:"required"`
 	DischargeDate string `json:"discharge_date" `
 }
+
+type Dentist struct {
+	ID           int    `json:"id"`
+	LastName     string `json:"lastName"`
+	Name         string `json:"Name"`
+	Registration string `json:"Registration"`
+}
+
+type Appointment struct {
+	ID          int     `json:"id"`
+	Patient     Patient `json:"patient"`
+	Dentist     Dentist `json:"dentist"`
+	Date        string  `json:"date"`
+	Hour        string  `json:"hour"`
+	Description string  `json:"description"`
+}

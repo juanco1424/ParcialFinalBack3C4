@@ -12,7 +12,7 @@ import (
 )
 
 type DentistHandler struct {
-	IService odontologo.IService
+	IService odontologo.IServiceDentist
 }
 
 func (ph *DentistHandler) GetDentistById(ctx *gin.Context) {

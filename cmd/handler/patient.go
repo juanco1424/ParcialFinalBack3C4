@@ -12,7 +12,7 @@ import (
 )
 
 type PatientHandler struct {
-	PService paciente.IService
+	PService paciente.IServicePatient
 }
 
 func (ph *PatientHandler) GetPatientById(ctx *gin.Context) {

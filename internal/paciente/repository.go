@@ -14,7 +14,7 @@ type IRepository interface {
 }
 
 type Repository struct {
-	Store store.IStore
+	Store store.IStorePatient
 }
 
 func (r *Repository) GetPatientById(id int) (*domain.Patient, error) {
