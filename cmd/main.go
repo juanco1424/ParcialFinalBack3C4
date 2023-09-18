@@ -6,6 +6,7 @@ import (
 	"parcial/cmd/handler"
 	"parcial/cmd/middleware"
 	"parcial/cmd/sever/external/database"
+	"parcial/internal/appointments"
 	"parcial/internal/odontologo"
 	"parcial/internal/paciente"
 
@@ -71,10 +72,10 @@ func main() {
 	}
 
 	appointmentRepo := appointments.AppointmentRepository{Store: &storageAppointment}
-	aservice := appointment.Service{Repository: &appointmentRepo}
-	ahandler := handler.AppointmentHandler{PService: &aservice}
+	aservice := appointments.AppointmentService{Repository: &appointmentRepo}
+	ahandler := handler.AppointmentHandler{AppointmentService: &aservice}
 
-	appointments := router.Group("appointment", authMidd.AuthHeader)
+	appointments := router.Group("appointments", authMidd.AuthHeader)
 	{
 		appointments.GET("", ahandler.GetAllAppointments)
 		appointments.GET(":id", ahandler.GetAppointmentById)

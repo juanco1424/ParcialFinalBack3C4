@@ -10,7 +10,7 @@ type SqlStoreAppointment struct {
 	DB *sql.DB
 }
 
-func (s *SqlStoreAppointment) GetAllAppointments() ([]*domain.Appointment, error) {
+func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error) {
 	query := "SELECT * FROM appointment"
 	rows, err := s.DB.Query(query)
 	if err != nil {
@@ -18,22 +18,24 @@ func (s *SqlStoreAppointment) GetAllAppointments() ([]*domain.Appointment, error
 	}
 	defer rows.Close()
 
-	var appointments []*domain.Appointment
+	appointments := make([]domain.Appointment, 0)
+
 	for rows.Next() {
 		var appointment domain.Appointment
 		err := rows.Scan(&appointment.ID, &appointment.Patient.Id, &appointment.Dentist.ID, &appointment.Date, &appointment.Hour, &appointment.Description)
 		if err != nil {
 			return nil, err
 		}
-		appointments = append(appointments, &appointment)
+		appointments = append(appointments, appointment)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return appointments, nil
+	return &appointments, nil 
 }
+
 
 func (s *SqlStoreAppointment) GetAppointmentById(id int) (*domain.Appointment, error) {
 	query := "SELECT * FROM appointment WHERE ID = ?"
@@ -51,7 +53,7 @@ func (s *SqlStoreAppointment) GetAppointmentById(id int) (*domain.Appointment, e
 	return &appointment, nil
 }
 
-func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) ([]*domain.Appointment, error) {
+func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
 	query := "SELECT a.* FROM appointment a JOIN patient p ON a.patient_id = p.id WHERE p.dni = ?"
 	rows, err := s.DB.Query(query, dni)
 	if err != nil {
@@ -59,22 +61,24 @@ func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) ([]*domain.Appoin
 	}
 	defer rows.Close()
 
-	var appointments []*domain.Appointment
+	appointments := make([]domain.Appointment, 0) 
+
 	for rows.Next() {
 		var appointment domain.Appointment
 		err := rows.Scan(&appointment.ID, &appointment.Patient.Id, &appointment.Dentist.ID, &appointment.Date, &appointment.Hour, &appointment.Description)
 		if err != nil {
 			return nil, err
 		}
-		appointments = append(appointments, &appointment)
+		appointments = append(appointments, appointment)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return appointments, nil
+	return &appointments, nil 
 }
+
 
 func (s *SqlStoreAppointment) CreateAppointment(appointment domain.Appointment) (*domain.Appointment, error) {
 	query := "INSERT INTO appointment (patient_id, dentist_id, date, hour, description) VALUES (?, ?, ?, ?, ?)"

@@ -13,53 +13,53 @@ type IAppointmentService interface {
 	DeleteAppointment(id int) error
 }
 
-type appointmentService struct {
-	r IAppointmentRepository
+type AppointmentService struct {
+	Repository IAppointmentRepository
 }
 
-func (s *appointmentService) GetAllAppointments() (*[]domain.Appointment, error) {
-	appointments, err := s.r.GetAllAppointments()
+func (s *AppointmentService) GetAllAppointments() (*[]domain.Appointment, error) {
+	appointments, err := s.Repository.GetAllAppointments()
 	if err != nil {
 		return nil, err
 	}
 	return appointments, nil
 }
 
-func (s *appointmentService) GetAppointmentByID(id int) (*domain.Appointment, error) {
-	appointment, err := s.r.GetAppointmentById(id)
+func (s *AppointmentService) GetAppointmentById(id int) (*domain.Appointment, error) {
+	appointment, err := s.Repository.GetAppointmentById(id)
 	if err != nil {
 		return nil, err
 	}
 	return appointment, nil
 }
 
-func (s *appointmentService) CreateAppointment(a domain.Appointment) (*domain.Appointment, error) {
-	appointment, err := s.r.CreateAppointment(a)
+func (s *AppointmentService) CreateAppointment(a domain.Appointment) (*domain.Appointment, error) {
+	appointment, err := s.Repository.CreateAppointment(a)
 	if err != nil {
 		return nil, err
 	}
 	return appointment, nil
 }
 
-func (s *appointmentService) UpdateAppointment(id int, a domain.Appointment) (*domain.Appointment, error) {
-	appointment, err := s.r.UpdateAppointment(id, a)
+func (s *AppointmentService) UpdateAppointment(id int, a domain.Appointment) (*domain.Appointment, error) {
+	appointment, err := s.Repository.UpdateAppointment(id, a)
 	if err != nil {
 		return nil, err
 	}
 	return appointment, nil
 }
 
-func (s *appointmentService) DeleteAppointment(id int) error {
-	err := s.r.DeleteAppointment(id)
+func (s *AppointmentService) DeleteAppointment(id int) error {
+	err := s.Repository.DeleteAppointment(id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *appointmentService) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
+func (s *AppointmentService) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
 	// Llamar al repositorio para obtener las citas por DNI
-	appointments, err := s.r.GetAppointmentsByDni(dni)
+	appointments, err := s.Repository.GetAppointmentsByDni(dni)
 	if err != nil {
 		return nil, err
 	}

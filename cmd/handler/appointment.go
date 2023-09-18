@@ -45,7 +45,7 @@ func (h *AppointmentHandler) GetAppointmentById(c *gin.Context) {
 	c.JSON(http.StatusOK, appointment)
 }
 
-func (h *AppointmentHandler) GetAppointmentByDni(c *gin.Context) {
+func (h *AppointmentHandler) GetAppointmentsByDni(c *gin.Context) {
 	dni := c.Param("dni") // Obtener el parámetro "dni" de la URL
 	appointments, err := h.AppointmentService.GetAppointmentsByDni(dni)
 	if err != nil {

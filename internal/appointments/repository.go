@@ -16,11 +16,11 @@ type IAppointmentRepository interface {
 }
 
 type AppointmentRepository struct {
-	storage store.IStoreAppointment
+	Store store.IStoreAppointment
 }
 
 func (r *AppointmentRepository) GetAllAppointments() (*[]domain.Appointment, error) {
-	appointments, err := r.storage.GetAllAppointments()
+	appointments, err := r.Store.GetAllAppointments()
 	if err != nil {
 		return nil, errors.New("No se puede obtener el listado de turnos")
 	}
@@ -28,7 +28,7 @@ func (r *AppointmentRepository) GetAllAppointments() (*[]domain.Appointment, err
 }
 
 func (r *AppointmentRepository) GetAppointmentById(id int) (*domain.Appointment, error) {
-	appointment, err := r.storage.GetAppointmentById(id)
+	appointment, err := r.Store.GetAppointmentById(id)
 	if err != nil {
 		return nil, errors.New("No se puede obtener el turno")
 	}
@@ -36,7 +36,7 @@ func (r *AppointmentRepository) GetAppointmentById(id int) (*domain.Appointment,
 }
 
 func (r *AppointmentRepository) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
-	appointments, err := r.storage.GetAppointmentsByDni(dni)
+	appointments, err := r.Store.GetAppointmentsByDni(dni)
 	if err != nil {
 		return nil, errors.New("No se pueden obtener los turnos del paciente")
 	}
@@ -44,7 +44,7 @@ func (r *AppointmentRepository) GetAppointmentsByDni(dni string) (*[]domain.Appo
 }
 
 func (r *AppointmentRepository) CreateAppointment(appointment domain.Appointment) (*domain.Appointment, error) {
-	a, err := r.storage.CreateAppointment(appointment)
+	a, err := r.Store.CreateAppointment(appointment)
 	if err != nil {
 		return nil, errors.New("Error al crear el turno")
 	}
@@ -52,11 +52,11 @@ func (r *AppointmentRepository) CreateAppointment(appointment domain.Appointment
 }
 
 func (r *AppointmentRepository) UpdateAppointment(id int, appointment domain.Appointment) (*domain.Appointment, error) {
-	_, err := r.storage.GetAppointmentById(id)
+	_, err := r.Store.GetAppointmentById(id)
 	if err != nil {
 		return nil, errors.New("El turno no existe")
 	}
-	a, err := r.storage.UpdateAppointment(id, appointment)
+	a, err := r.Store.UpdateAppointment(id, appointment)
 	if err != nil {
 		return nil, errors.New("No se pudo actualizar el turno")
 	}
@@ -64,11 +64,11 @@ func (r *AppointmentRepository) UpdateAppointment(id int, appointment domain.App
 }
 
 func (r *AppointmentRepository) DeleteAppointment(id int) error {
-	_, err := r.storage.GetAppointmentById(id)
+	_, err := r.Store.GetAppointmentById(id)
 	if err != nil {
 		return err
 	}
-	err = r.storage.DeleteAppointment(id)
+	err = r.Store.DeleteAppointment(id)
 	if err != nil {
 		return errors.New("No se pudo eliminar el turno")
 	}
