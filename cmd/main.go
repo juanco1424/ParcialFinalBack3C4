@@ -5,7 +5,7 @@ import (
 	"parcial/cmd/config"
 	"parcial/cmd/handler"
 	"parcial/cmd/middleware"
-	"parcial/cmd/sever/external/database"
+	"parcial/cmd/server/external/database"
 	"parcial/internal/appointments"
 	"parcial/internal/odontologo"
 	"parcial/internal/paciente"
