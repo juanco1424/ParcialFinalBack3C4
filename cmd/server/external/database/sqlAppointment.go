@@ -21,8 +21,9 @@ func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error
 	appointments := make([]domain.Appointment, 0)
 
 	for rows.Next() {
+
 		var appointment domain.Appointment
-		err := rows.Scan(&appointment.ID, &appointment.Patient.Id, &appointment.Dentist.ID, &appointment.Date, &appointment.Hour, &appointment.Description)
+		err := rows.Scan(&appointment.ID, &appointment.Date, &appointment.Hour, &appointment.Description, &appointment.Dentist.ID, &appointment.Patient.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -33,9 +34,8 @@ func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error
 		return nil, err
 	}
 
-	return &appointments, nil 
+	return &appointments, nil
 }
-
 
 func (s *SqlStoreAppointment) GetAppointmentById(id int) (*domain.Appointment, error) {
 	query := "SELECT * FROM appointment WHERE ID = ?"
@@ -61,7 +61,7 @@ func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appoin
 	}
 	defer rows.Close()
 
-	appointments := make([]domain.Appointment, 0) 
+	appointments := make([]domain.Appointment, 0)
 
 	for rows.Next() {
 		var appointment domain.Appointment
@@ -76,9 +76,8 @@ func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appoin
 		return nil, err
 	}
 
-	return &appointments, nil 
+	return &appointments, nil
 }
-
 
 func (s *SqlStoreAppointment) CreateAppointment(appointment domain.Appointment) (*domain.Appointment, error) {
 	query := "INSERT INTO appointment (patient_id, dentist_id, date, hour, description) VALUES (?, ?, ?, ?, ?)"
