@@ -162,13 +162,13 @@ func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appoin
 }
 
 func (s *SqlStoreAppointment) CreateAppointment(appointment domain.Appointment) (*domain.Appointment, error) {
-	query := "INSERT INTO appointment (patient_id, dentist_id, date, hour, description) VALUES (?, ?, ?, ?, ?)"
+	query := "INSERT INTO appointment (date, hour, description, dentist_id,patient_id) VALUES (?, ?, ?, ?, ?)"
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := stmt.Exec(appointment.Patient.Id, appointment.Dentist.ID, appointment.Date, appointment.Hour, appointment.Description)
+	res, err := stmt.Exec(appointment.Date, appointment.Hour, appointment.Description, appointment.Dentist.ID, appointment.Patient.Id)
 	if err != nil {
 		return nil, err
 	}
