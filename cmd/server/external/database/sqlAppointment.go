@@ -101,8 +101,8 @@ func (s *SqlStoreAppointment) CreateAppointment(appointment domain.Appointment) 
 }
 
 func (s *SqlStoreAppointment) UpdateAppointment(id int, appointment domain.Appointment) (*domain.Appointment, error) {
-	query := "UPDATE appointment SET patient_id = ?, dentist_id = ?, date = ?, hour = ?, description = ? WHERE ID = ?"
-	result, err := s.DB.Exec(query, appointment.Patient.Id, appointment.Dentist.ID, appointment.Date, appointment.Hour, appointment.Description, id)
+	query := "UPDATE appointment SET  date = ?, hour = ?, description = ?, dentist_id = ?, patient_id = ?, WHERE id = ?"
+	result, err := s.DB.Exec(query, appointment.Date, appointment.Hour, appointment.Description, appointment.Dentist.ID, appointment.Patient.Id, id)
 	if err != nil {
 		return nil, fmt.Errorf("error al actualizar el turno con ID %d: %v", id, err)
 	}
