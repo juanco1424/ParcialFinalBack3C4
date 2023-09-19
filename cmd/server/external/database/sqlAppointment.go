@@ -11,7 +11,29 @@ type SqlStoreAppointment struct {
 }
 
 func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error) {
-	query := "SELECT * FROM appointment"
+	query := `
+    SELECT
+        t.id AS appointment_id,
+        p.id AS patient_id,
+        p.name AS patient_name,
+        p.lastName AS patient_last_name,
+        p.address AS patient_address,
+        p.dni AS patient_dni,
+        p.dischargeDate AS patient_discharge_date,
+        d.id AS dentist_id,
+        d.name AS dentist_name,
+        d.lastName AS dentist_last_name,
+        d.registration AS dentist_registration,
+        t.date,
+        t.hour,
+        t.description
+    FROM
+        appointment t
+    LEFT JOIN
+        patient p ON p.id = t.patient_id
+    LEFT JOIN
+        dentist d ON d.id = t.dentist_id`
+
 	rows, err := s.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -21,9 +43,23 @@ func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error
 	appointments := make([]domain.Appointment, 0)
 
 	for rows.Next() {
-
 		var appointment domain.Appointment
-		err := rows.Scan(&appointment.ID, &appointment.Date, &appointment.Hour, &appointment.Description, &appointment.Dentist.ID, &appointment.Patient.Id)
+		err := rows.Scan(
+			&appointment.ID,
+			&appointment.Patient.Id,
+			&appointment.Patient.Name,
+			&appointment.Patient.LastName,
+			&appointment.Patient.Address,
+			&appointment.Patient.DNI,
+			&appointment.Patient.DischargeDate,
+			&appointment.Dentist.ID,
+			&appointment.Dentist.Name,
+			&appointment.Dentist.LastName,
+			&appointment.Dentist.Registration,
+			&appointment.Date,
+			&appointment.Hour,
+			&appointment.Description,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -38,19 +74,26 @@ func (s *SqlStoreAppointment) GetAllAppointments() (*[]domain.Appointment, error
 }
 
 func (s *SqlStoreAppointment) GetAppointmentById(id int) (*domain.Appointment, error) {
-	query := "SELECT * FROM appointment WHERE ID = ?"
+	query := `
+	SELECT
+		t.id AS appointment_id,
+		p.*,
+		d.*,
+		t.date,
+		t.hour,
+		t.description
+	FROM
+		appointment t
+	LEFT JOIN
+		patient p ON p.id = t.patient_id
+	LEFT JOIN
+		dentist d ON d.id = t.dentist_id
+	WHERE
+		t.id = ?;
+	`
+
 	row := s.DB.QueryRow(query, id)
-
-	var appointment domain.Appointment
-	err := row.Scan(&appointment.ID, &appointment.Patient.Id, &appointment.Dentist.ID, &appointment.Date, &appointment.Hour, &appointment.Description)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("no se encontró ningún turno con el ID proporcionado")
-		}
-		return nil, err
-	}
-
-	return &appointment, nil
+	return s.scanAppointment(row)
 }
 
 func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
@@ -122,4 +165,33 @@ func (s *SqlStoreAppointment) DeleteAppointment(id int) error {
 		return err
 	}
 	return nil
+}
+func (s *SqlStoreAppointment) scanAppointment(row *sql.Row) (*domain.Appointment, error) {
+	var appointment domain.Appointment
+
+	err := row.Scan(
+		&appointment.ID,
+		&appointment.Patient.Id,
+		&appointment.Patient.Name,
+		&appointment.Patient.LastName,
+		&appointment.Patient.Address,
+		&appointment.Patient.DNI,
+		&appointment.Patient.DischargeDate,
+		&appointment.Dentist.ID,
+		&appointment.Dentist.Name,
+		&appointment.Dentist.LastName,
+		&appointment.Dentist.Registration,
+		&appointment.Date,
+		&appointment.Hour,
+		&appointment.Description,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no se encontró turno")
+		}
+		return nil, err
+	}
+
+	return &appointment, nil
 }
