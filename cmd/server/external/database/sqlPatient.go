@@ -32,21 +32,28 @@ func (s *SqlStorePatient) GetPatientByDni(dni string) (*domain.Patient, error) {
 }
 
 func (s *SqlStorePatient) CreatePatient(patient domain.Patient) (*domain.Patient, error) {
+
 	query := "INSERT INTO patient (Name, LastName, Address, DNI, DischargeDate) VALUES (?, ?, ?, ?, ?)"
 	stmt, err := s.DB.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := stmt.Exec(patient.Name, patient.LastName, patient.Address, patient.DNI, patient.DischargeDate)
+	var id int64
+	result, err := stmt.Exec(patient.Name, patient.LastName, patient.Address, patient.DNI, patient.DischargeDate)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = res.RowsAffected()
+	// Obtener el id autogenerado
+	id, err = result.LastInsertId()
 	if err != nil {
 		return nil, err
 	}
+
+	// Setear el ID autogenerado in la struct de patient para
+	//mostrarlo en el resp
+	patient.Id = int(id)
 
 	return &patient, nil
 }
@@ -66,5 +73,6 @@ func (s *SqlStorePatient) UpdatePatient(id int, patient domain.Patient) (*domain
 	if err != nil {
 		return nil, err
 	}
+	patient.Id = id
 	return &patient, nil
 }
