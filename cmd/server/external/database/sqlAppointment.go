@@ -97,7 +97,31 @@ func (s *SqlStoreAppointment) GetAppointmentById(id int) (*domain.Appointment, e
 }
 
 func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appointment, error) {
-	query := "SELECT a.* FROM appointment a JOIN patient p ON a.patient_id = p.id WHERE p.dni = ?"
+	query := `
+	SELECT
+		t.id AS appointment_id,
+		p.id AS patient_id,
+		p.name AS patient_name,
+		p.lastName AS patient_last_name,
+		p.address AS patient_address,
+		p.dni AS patient_dni,
+		p.dischargeDate AS patient_discharge_date,
+		d.id AS dentist_id,
+		d.name AS dentist_name,
+		d.lastName AS dentist_last_name,
+		d.registration AS dentist_registration,
+		t.date,
+		t.hour,
+		t.description
+	FROM
+		appointment t
+	LEFT JOIN
+		patient p ON p.id = t.patient_id
+	LEFT JOIN
+		dentist d ON d.id = t.dentist_id
+	WHERE
+		p.dni = ?;
+	`
 	rows, err := s.DB.Query(query, dni)
 	if err != nil {
 		return nil, err
@@ -108,7 +132,22 @@ func (s *SqlStoreAppointment) GetAppointmentsByDni(dni string) (*[]domain.Appoin
 
 	for rows.Next() {
 		var appointment domain.Appointment
-		err := rows.Scan(&appointment.ID, &appointment.Patient.Id, &appointment.Dentist.ID, &appointment.Date, &appointment.Hour, &appointment.Description)
+		err := rows.Scan(
+			&appointment.ID,
+			&appointment.Patient.Id,
+			&appointment.Patient.Name,
+			&appointment.Patient.LastName,
+			&appointment.Patient.Address,
+			&appointment.Patient.DNI,
+			&appointment.Patient.DischargeDate,
+			&appointment.Dentist.ID,
+			&appointment.Dentist.Name,
+			&appointment.Dentist.LastName,
+			&appointment.Dentist.Registration,
+			&appointment.Date,
+			&appointment.Hour,
+			&appointment.Description,
+		)
 		if err != nil {
 			return nil, err
 		}
