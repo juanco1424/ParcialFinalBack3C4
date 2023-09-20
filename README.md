@@ -52,3 +52,18 @@ Appointment Endpoints:
     POST /appointments: Crea un nuevo turno.
     PUT /appointments/{id}: Actualiza la información de un turno existente por su ID.
     DELETE /appointments/{id}: Elimina un turno por su ID.
+
+### Middleware
+
+Para poder acceder a los endpoints la autenticación estabasado en claves públicas y privadas, asegúrate de incluir las siguientes cabeceras en las solicitudes HTTP:
+
+- `Private-key`: Encuentra en el archivo .env
+- `Public-key`: dh092023g4
+
+A continuación, se muestra un ejemplo de cómo realizar una solicitud utilizando `curl`:
+
+```bash
+curl --location 'http://localhost:8080/dentist/1' \
+--header 'Private-key: {SECRET-KEY}' \
+--header 'Public-key: dh092023g4'
+
