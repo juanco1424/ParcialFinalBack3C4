@@ -27,7 +27,8 @@ Implementacion de una API que permite administrar la reserva de turnos para una 
     cd cmd && go run main.go
 
 ### Uso
-La aplicación está configurada para ejecutarse en el puerto 8080. Base url: http://localhost:8080/
+- La aplicación está configurada para ejecutarse en el puerto 8082. Base url: http://localhost:8082/
+- Doc: http://localhost:8082/swagger/index.html#/
 
 #### Endpoints
 Patient Endpoints:
