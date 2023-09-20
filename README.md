@@ -55,7 +55,7 @@ Appointment Endpoints:
 
 ### Middleware
 
-Para poder acceder a los endpoints la autenticación estabasado en claves públicas y privadas, asegúrate de incluir las siguientes cabeceras en las solicitudes HTTP:
+Para poder acceder a los endpoints la autenticación esta basado en claves públicas y privadas, asegúrate de incluir las siguientes cabeceras en las solicitudes HTTP:
 
 - `Private-key`: Encuentra en el archivo .env
 - `Public-key`: dh092023g4
