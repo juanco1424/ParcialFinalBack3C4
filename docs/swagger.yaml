@@ -1,0 +1,304 @@
+definitions:
+  domain.Appointment:
+    properties:
+      date:
+        type: string
+      dentist:
+        $ref: '#/definitions/domain.Dentist'
+      description:
+        type: string
+      hour:
+        type: string
+      id:
+        type: integer
+      patient:
+        $ref: '#/definitions/domain.Patient'
+    type: object
+  domain.Dentist:
+    properties:
+      Name:
+        type: string
+      Registration:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+    type: object
+  domain.Patient:
+    properties:
+      address:
+        type: string
+      dischargeDate:
+        type: string
+      dni:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      name:
+        type: string
+    required:
+    - address
+    - dni
+    - last_name
+    - name
+    type: object
+info:
+  contact: {}
+paths:
+  /appointments:
+    get:
+      description: Obtiene todas las citas registradas en el sistema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Obtiene todas las citas
+      tags:
+      - citas
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva cita en el sistema
+      parameters:
+      - description: Datos de la cita
+        in: body
+        name: appointment
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Crea una nueva cita
+      tags:
+      - citas
+  /appointments/{id}:
+    delete:
+      description: Elimina una cita existente en el sistema
+      parameters:
+      - description: ID de la cita
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Cita eliminada exitosamente
+      summary: Elimina una cita existente
+      tags:
+      - citas
+    get:
+      description: Obtiene la cita correspondiente al ID proporcionado
+      parameters:
+      - description: ID de la cita
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Obtiene una cita por su ID
+      tags:
+      - citas
+    put:
+      consumes:
+      - application/json
+      description: Actualiza los datos de una cita existente en el sistema
+      parameters:
+      - description: ID de la cita
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nuevos datos de la cita
+        in: body
+        name: appointment
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Actualiza una cita existente
+      tags:
+      - citas
+  /appointments/dni/{dni}:
+    get:
+      description: Obtiene todas las citas registradas en el sistema para un paciente
+        específico
+      parameters:
+      - description: DNI del paciente
+        in: path
+        name: dni
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Obtiene todas las citas de un paciente por su DNI
+      tags:
+      - citas
+  /dentists:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo dentista en el sistema
+      parameters:
+      - description: Datos del dentista
+        in: body
+        name: dentist
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Dentist'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Crea un nuevo dentista
+      tags:
+      - dentistas
+  /dentists/{id}:
+    delete:
+      description: Elimina un dentista existente en el sistema
+      parameters:
+      - description: ID del dentista
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Dentista eliminado exitosamente
+      summary: Elimina un dentista existente
+      tags:
+      - dentistas
+    get:
+      description: Obtiene la información de un dentista según su ID
+      parameters:
+      - description: ID del dentista
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Obtiene un dentista por su ID
+      tags:
+      - dentistas
+    put:
+      consumes:
+      - application/json
+      description: Actualiza los datos de un dentista existente en el sistema
+      parameters:
+      - description: ID del dentista
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nuevos datos del dentista
+        in: body
+        name: dentist
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Dentist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Actualiza un dentista existente
+      tags:
+      - dentistas
+  /patients:
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo paciente en el sistema
+      parameters:
+      - description: Datos del paciente
+        in: body
+        name: patient
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Patient'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Crea un nuevo paciente
+      tags:
+      - pacientes
+  /patients/{id}:
+    delete:
+      description: Elimina un paciente existente en el sistema
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Paciente eliminado exitosamente
+      summary: Elimina un paciente existente
+      tags:
+      - pacientes
+    get:
+      description: Obtiene la información de un paciente según su ID
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Obtiene un paciente por su ID
+      tags:
+      - pacientes
+    put:
+      consumes:
+      - application/json
+      description: Actualiza los datos de un paciente existente en el sistema
+      parameters:
+      - description: ID del paciente
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nuevos datos del paciente
+        in: body
+        name: patient
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Patient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Actualiza un paciente existente
+      tags:
+      - pacientes
+swagger: "2.0"

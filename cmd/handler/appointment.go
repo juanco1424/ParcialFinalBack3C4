@@ -19,6 +19,12 @@ func NewAppointmentHandler(appointmentService appointments.IAppointmentService) 
 	}
 }
 
+// @Summary Obtiene todas las citas
+// @Description Obtiene todas las citas registradas en el sistema
+// @Tags citas
+// @Produce json
+// @Success 200 
+// @Router /appointments [get]
 func (h *AppointmentHandler) GetAllAppointments(c *gin.Context) {
 	appointments, err := h.AppointmentService.GetAllAppointments()
 	if err != nil {
@@ -28,6 +34,13 @@ func (h *AppointmentHandler) GetAllAppointments(c *gin.Context) {
 	c.JSON(http.StatusOK, appointments)
 }
 
+// @Summary Obtiene una cita por su ID
+// @Description Obtiene la cita correspondiente al ID proporcionado
+// @Tags citas
+// @Produce json
+// @Param id path int true "ID de la cita"
+// @Success 200 
+// @Router /appointments/{id} [get]
 func (h *AppointmentHandler) GetAppointmentById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -45,6 +58,13 @@ func (h *AppointmentHandler) GetAppointmentById(c *gin.Context) {
 	c.JSON(http.StatusOK, appointment)
 }
 
+// @Summary Obtiene todas las citas de un paciente por su DNI
+// @Description Obtiene todas las citas registradas en el sistema para un paciente específico
+// @Tags citas
+// @Produce json
+// @Param dni path string true "DNI del paciente"
+// @Success 200 
+// @Router /appointments/dni/{dni} [get]
 func (h *AppointmentHandler) GetAppointmentsByDni(c *gin.Context) {
 	dni := c.Param("dni") // Obtener el parámetro "dni" de la URL
 	appointments, err := h.AppointmentService.GetAppointmentsByDni(dni)
@@ -56,6 +76,14 @@ func (h *AppointmentHandler) GetAppointmentsByDni(c *gin.Context) {
 	c.JSON(http.StatusOK, appointments)
 }
 
+// @Summary Crea una nueva cita
+// @Description Crea una nueva cita en el sistema
+// @Tags citas
+// @Accept json
+// @Produce json
+// @Param appointment body domain.Appointment true "Datos de la cita"
+// @Success 201 
+// @Router /appointments [post]
 func (h *AppointmentHandler) CreateAppointment(c *gin.Context) {
 	var appointment domain.Appointment
 	if err := c.BindJSON(&appointment); err != nil {
@@ -72,6 +100,15 @@ func (h *AppointmentHandler) CreateAppointment(c *gin.Context) {
 	c.JSON(http.StatusCreated, createdAppointment)
 }
 
+// @Summary Actualiza una cita existente
+// @Description Actualiza los datos de una cita existente en el sistema
+// @Tags citas
+// @Accept json
+// @Produce json
+// @Param id path int true "ID de la cita"
+// @Param appointment body domain.Appointment true "Nuevos datos de la cita"
+// @Success 200 
+// @Router /appointments/{id} [put]
 func (h *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -95,6 +132,12 @@ func (h *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedAppointment)
 }
 
+// @Summary Elimina una cita existente
+// @Description Elimina una cita existente en el sistema
+// @Tags citas
+// @Param id path int true "ID de la cita"
+// @Success 204 "Cita eliminada exitosamente"
+// @Router /appointments/{id} [delete]
 func (h *AppointmentHandler) DeleteAppointment(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -110,3 +153,4 @@ func (h *AppointmentHandler) DeleteAppointment(c *gin.Context) {
 
 	c.JSON(http.StatusNoContent, nil)
 }
+
