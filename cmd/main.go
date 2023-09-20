@@ -1,11 +1,14 @@
 package main
 
 import (
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"os"
 	"parcial/cmd/config"
 	"parcial/cmd/handler"
 	"parcial/cmd/middleware"
 	"parcial/cmd/server/external/database"
+	"parcial/docs"
 	"parcial/internal/appointments"
 	"parcial/internal/odontologo"
 	"parcial/internal/paciente"
@@ -51,6 +54,8 @@ func main() {
 	phandler := handler.PatientHandler{PService: &pservice}
 
 	router := gin.Default()
+	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	patients := router.Group("patient", authMidd.AuthHeader)
 	{
 		patients.GET(":id", phandler.GetPatientById)
@@ -84,6 +89,6 @@ func main() {
 		appointments.DELETE(":id", ahandler.DeleteAppointment)
 		appointments.PUT(":id", ahandler.UpdateAppointment)
 	}
-	router.Run()
+	router.Run(":8082")
 
 }
